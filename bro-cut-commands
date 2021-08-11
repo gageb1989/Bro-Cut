@@ -1,0 +1,49 @@
+# Connections
+zcat conn.* | bro-cut ts -d id.orig_h id.orig_p id.resp_h id.resp_p proto 
+
+# DNS
+zcat dns.* | bro-cut ts -d id.orig_h id.orig_p id.resp_h id.resp_p proto query
+
+# Files
+zcat files.* | bro-cut ts -d tx_hosts rx_hosts source mime_type filename 
+
+# Known host - sort to show all unique knowns hosts
+zcat known_* | bro-cut host | uniq | sort | uniq
+
+# Kerberos - Find user logins
+zcat kerberos.* | bro-cut ts -d id.orig_h id.orig_p id.resp_h id.resp_p client
+
+# Find all SMB shares
+zcat smb_mapping.* | bro-cut ts -d id.orig_h id.orig_p id.resp_h id.resp_p path
+
+# SMB files
+cat smb_files.* | bro-cut ts -d id.orig_h id.orig_p id.resp_h id.resp_p action  name path
+
+# Files
+cat files.* | bro-cut ts -d tx_hosts rx_hosts source mime_type filename 
+
+# SMTP -mail
+zcat smtp.* | bro-cut ts -d id.orig_h id.orig_p id.resp_h id.resp_p rcptto  mailfrom
+
+# ja3
+cat ssl.* | bro-cut  ts -d id.orig_h id.orig_p id.resp_h id.resp_p subject issuer validation_status ja3 ja3s
+
+# SSH
+ zcat ssh.* | bro-cut ts -d id.orig_h id.orig_p id.resp_h id.resp_p direction client server
+
+# RDP
+zcat rdp.* | bro-cut ts -d id.orig_h id.orig_p id.resp_h id.resp_p cookie security_protocol
+
+
+# NTLM - login information 
+ zcat ntlm.* | bro-cut ts -d id.orig_h id.orig_p id.resp_h id.resp_p username hostname domainname success status
+
+
+# HTTP
+ zcat http_* | bro-cut ts -d id.orig_h id.orig_p id.resp_h id.resp_p method host uri referrer
+
+# FTP
+zcat ftp.*  | bro-cut ts -d  id.orig_h id.orig_p id.resp_h id.resp_p password arg mime_type
+
+# Find self signed cert 
+zcat ssl.* | bro-cut ts -d id.orig_h id.orig_p id.resp_h id.resp_p subject issuer validation_status | grep "self\ssigned" | grep -v chain
